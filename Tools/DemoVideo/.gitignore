@@ -1,0 +1,17 @@
+node_modules/
+
+# 영상 자료(녹화 원본·렌더 결과·정적 소재)는 저장소에 올리지 않음
+public/
+out/
+*.mp4
+*.mov
+*.webm
+*.mkv
+*.avi
+*.gif
+*.wav
+*.mp3
+
+# 문서는 README.md만 올림
+*.md
+!/README.md

@@ -1,0 +1,20 @@
+* text=auto eol=lf
+*.cs text eol=lf
+*.md text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+*.png binary
+*.fbx binary
+*.psd binary
+*.mp4 binary
+*.jpg binary
+*.gif binary
+
+# Unity가 생성하는 YAML은 빈 값 뒤 공백을 포함하므로 공백 검사에서 제외
+*.asset whitespace=-trailing-space
+*.meta whitespace=-trailing-space
+*.unity whitespace=-trailing-space
+*.prefab whitespace=-trailing-space
+*.mat whitespace=-trailing-space

@@ -1,0 +1,55 @@
+# Unity 생성물
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Mm]emoryCaptures/
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.booproj
+*.unityproj
+.vs/
+.idea/
+.vscode/
+
+# 외부 에셋 원본 (재배포 금지 조건 포함)
+/_ThirdParty/*
+
+# 로컬 작업 산출물
+/_AI/
+/.claude/settings.local.json
+
+# 시연용으로 가져온 외부 에셋 (README 안내에 따라 각자 설치)
+/Packages/jp.lilxyzw.liltoon/
+/Assets/_Demo/
+/Assets/_Demo.meta
+/Assets/OutfitGrader_Output/
+/Assets/OutfitGrader_Output.meta
+# 이전 이름으로 생성된 결과물
+/Assets/MiniOutfitFitter_Output/
+/Assets/MiniOutfitFitter_Output.meta
+/ProjectSettings/lilToonSetting.json
+
+# README가 아닌 Markdown 문서(기획서·개발 기록·규약 메모)는 올리지 않음
+*.md
+!README.md
+
+# 개발 중 생긴 이미지는 올리지 않고, README에 쓰는 이미지(docs/images)만 올림
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp
+*.tga
+*.psd
+*.tif
+*.tiff
+!/docs/images/*.jpg
+!/docs/images/gif/*.gif
