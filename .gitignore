@@ -53,3 +53,23 @@
 *.tiff
 !/docs/images/*.jpg
 !/docs/images/gif/*.gif
+
+# AI 에이전트 작업 자료(지침·설정·기획서·작업 계획·작업 기록·산출물)는 올리지 않음
+/.claude/
+/.codex/
+/.agents/
+/.cursor/
+/.serena/
+/.windsurf/
+/.aider*
+/_AI/
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+/docs/prd/
+/docs/tasks/
+/docs/progress/
+/docs/ai-worklog/
+/docs/plans/
+**/PRD.md
+/scripts/harness/
