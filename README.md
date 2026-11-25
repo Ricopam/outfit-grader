@@ -2,9 +2,10 @@
 
 의상·소품을 **체형이 전혀 다른 아바타**에 옮겨 입히는 Unity 에디터 도구입니다.
 
-[![시연 영상: 모자·후드티·안경을 한 번에 입힌 세미케모형과 치비 마스코트형](docs/images/gif/result-turntable.gif)](docs/videos/outfit-grader-explain.mp4)
+시연 영상 (2분 5초, 소리 없음)
 
-- 이미지를 누르면 시연 영상(2분 5초, 소리 없음)이 열립니다.
+https://github.com/user-attachments/assets/7e1336ce-5ad9-4e9e-b073-d006dc9f4a9e
+
 - 사용자: 다른 아바타 전용 의상을 자기 아바타에 입히려는 VRChat 사용자
 - 지원 범위: **모자·상의·안경** (손 소품·하의·신발 제외)
 - 개발: 1인 개발, Unity 2022.3 LTS, 외부 패키지 없음
