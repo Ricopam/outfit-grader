@@ -177,26 +177,31 @@ Lumelana에 남은 값은 머리카락 가닥(머리 본에 묶여 몸 표면으
 
 ### 한눈에 보기
 
+다이어그램 기호: 둥근 칸 = 시작·끝, 평행사변형 = 입력·결과, 마름모 = 판단(예/아니오), 사각형 = 처리 단계.
+
 ```mermaid
 flowchart TD
-    IN["입력: 원본 아바타 · 의상(여러 개) · 대상 아바타"] --> AN
-    subgraph AN["1. 분석 (FitAnalysis)"]
-        direction LR
-        A1["본 매칭<br/>Humanoid -> 이름 정규화"] --> A2["크기 측정<br/>몸·머리 구역 + 팔·몸통 마디"] --> A3["진단<br/>문제 / 원인 / 해결"]
-    end
-    AN --> UI{"창에서 확인<br/>오류가 있으면 실행 잠금"}
-    UI -- "본 연결·배율 직접 수정" --> AN
-    UI -- "맞추기 실행" --> PL["2. 본 배치<br/>대상 본 아래로 옮기고 위치·크기 보정"]
-    PL --> MESH{"3. 메시별 맞춤<br/>(관통 밀어내기 켬)"}
-    MESH -- "본에 묶인 상의" --> SO["표면 간격 보존<br/>+ 형태 검사"]
-    MESH -- "후드 등 범위 밖·옵션 끔" --> PU["관통 밀어내기"]
-    MESH -- "본 없는 모자" --> HAT["두상 맞춤 + 귀 구멍"]
-    SO --> RES["4. 겹침 정리<br/>몸 변이 뚫은 옷 삼각형만 다시 밀기"]
+    START(["시작: Tools > Outfit Grader 창 열기"]) --> IN[/"원본 아바타 · 의상(여러 개) · 대상 아바타 지정"/]
+    IN --> AN["분석하기 (FitAnalysis)<br/>본 매칭 · 크기 측정 · 진단"]
+    AN --> Q1{"진단에 오류가 있는가?"}
+    Q1 -->|예| FIX["사용자가 본 연결·배율을 고치거나<br/>오류 난 의상을 목록에서 빼기"]
+    FIX --> AN
+    Q1 -->|아니오| PL["맞추기 실행: 의상 본을 대상 본 아래로 옮기고<br/>위치·크기 보정하기"]
+    PL --> Q2{"관통 밀어내기를 켰는가?"}
+    Q2 -->|예| Q3{"이 메시는 어떤 종류인가?<br/>(메시마다 판단)"}
+    Q3 -->|본에 묶인 상의| SO["표면 간격 보존 + 형태 검사<br/>꼬리 구멍 내기"]
+    Q3 -->|후드 등 간격 보존 범위 밖| PU["관통 밀어내기<br/>꼬리 구멍 내기"]
+    Q3 -->|본 없는 모자| HAT["두상 맞춤 + 귀 구멍 내기"]
+    SO --> RES["겹침 정리: 몸 메시의 변이 뚫고 지나간<br/>옷 삼각형만 다시 밀기"]
     PU --> RES
     HAT --> RES
-    RES --> RLX["5. 풀어 주기 · 늘어뜨리기<br/>(치비용 옵션)"]
-    RLX --> FUR["6. 꼬리 구멍 · 털 숨김"]
-    FUR --> OUT["결과: 대상 안에 의상 복제본<br/>변경 보고서 · Ctrl+Z 한 번으로 되돌리기"]
+    RES --> Q4{"풀어 주기를 켰는가?<br/>(치비용 옵션)"}
+    Q4 -->|예| RLX["풀어 주기 · 늘어뜨리기"]
+    RLX --> FUR["옷에 가려지는 털 묶음 숨기기"]
+    Q4 -->|아니오| FUR
+    FUR --> OUT[/"결과: 대상 안의 의상 복제본 · 변경 보고서"/]
+    Q2 -->|아니오| OUT
+    OUT --> END(["끝: Ctrl+Z 한 번으로 전부 되돌릴 수 있음"])
 ```
 
 ### 단계별 요약
@@ -245,13 +250,14 @@ flowchart TD
 ### 상의 맞춤: 표면 간격 보존
 
 ```mermaid
-flowchart LR
-    S1["원본 몸·대상 몸을<br/>원통 표로 측정<br/>(축 16칸 x 둘레 24칸)"] --> S2["옷 정점을<br/>(축 위치, 각도, 원본 간격)<br/>으로 바꿈"]
-    S2 --> S3["대상 표면 + 여유 간격<br/>+ 원본 간격 x 굵기 비율<br/>위치로 다시 놓음"]
-    S3 --> S4{"형태 검사<br/>3배 이상 눌린 면<br/>15% 초과?"}
-    S4 -- "예: 부위 상한 0.7배로 낮춤<br/>(최대 4번)" --> S3
-    S4 -- "아니오" --> S5["끈 · 후드 · 소맷부리<br/>모양 유지"]
-    S5 --> S6["겹침 정리<br/>뚫린 삼각형만 다시 밀기<br/>(최대 12번)"]
+flowchart TD
+    S(["시작: 본에 묶인 상의 메시"]) --> M["원본 몸과 대상 몸의 단면 반지름을<br/>원통 모양 표에 기록하기 (축 방향 16칸 x 둘레 24칸)"]
+    M --> C["옷 정점마다 축 위치 · 각도 ·<br/>원본 몸과 떨어진 간격 구하기"]
+    C --> P["대상 표면 + 여유 간격 + 원본 간격 x 굵기 비율 위치에<br/>다시 놓기 (끈 · 후드 · 소맷부리는 원본 모양 그대로 붙이기)"]
+    P --> Q{"3배 이상 눌린 면이<br/>부위의 15%를 넘는가?"}
+    Q -->|예| LOW["그 부위에서 옷을 늘이는 상한을<br/>0.7배로 낮추기 (최대 4번, 하한 1.4배)"]
+    LOW --> P
+    Q -->|아니오| E(["끝: 겹침 정리로 넘어가기"])
 ```
 
 - **간격을 옮기는 이유**: 원본에서 몸과 떨어져 있던 거리를 그대로 옮기므로, 셔츠 위 겉옷처럼 겹친 층의 순서가 뒤집히지 않습니다(대응이 단조 증가).
@@ -303,11 +309,15 @@ flowchart LR
 ### 관통 밀어내기 (기본 보정)
 
 ```mermaid
-flowchart LR
-    P1["대상 몸 정점·법선을<br/>격자에 나눔<br/>(엉덩이 높이 4% 칸)"] --> P2["옷 정점마다<br/>가장 가까운 몸 정점 찾기"]
-    P2 --> P3{"법선 평면보다<br/>안쪽인가?"}
-    P3 -- "예" --> P4["바깥으로 밀기<br/>주변 두 고리에 60%·30%"]
-    P3 -- "아니오" --> P5["그대로"]
+flowchart TD
+    S(["시작: 맞춘 옷 메시"]) --> G["대상 몸 정점과 바깥 법선을 격자에 나누기<br/>(한 칸 = 엉덩이 높이의 4%)"]
+    G --> PICK["옷 정점 하나를 골라<br/>가장 가까운 몸 정점 찾기"]
+    PICK --> Q{"몸 표면보다 안쪽에 있는가?"}
+    Q -->|예| PUSH["바깥으로 밀고, 이동량을 주변 두 고리 정점에<br/>60% · 30% 나눠 주기"]
+    PUSH --> NEXT{"남은 옷 정점이 있는가?"}
+    Q -->|아니오| NEXT
+    NEXT -->|예| PICK
+    NEXT -->|아니오| E(["끝: 민 정점으로 새 메시 만들기"])
 ```
 
 <details>
@@ -384,34 +394,24 @@ flowchart LR
 
 ## 구조
 
+화살표는 "호출한다"는 뜻이고, 숫자는 `OutfitFitter`가 단계를 부르는 순서입니다.
+
 ```mermaid
-flowchart LR
-    subgraph UI["Editor/UI (화면)"]
-        W["OutfitGraderWindow<br/>입력 -> 진단 -> 실행 -> 저장 흐름"]
-        L["OutfitInputList<br/>의상 목록"]
-        T["MatchTableView<br/>본 연결 표"]
-    end
-    subgraph AN["분석 (엔진 객체 최소)"]
-        FA["FitAnalysis"]
-        BM["BoneMatcher<br/>+ BoneNameNormalizer"]
-        RM["RegionMeasurer<br/>BodySegmentMeasurer<br/>BodyPointCloud"]
-        FD["FitDiagnostics<br/>(FitFacts만 입력)"]
-    end
-    subgraph FIT["맞추기"]
-        OF["OutfitFitter"]
-        FP["FitPlacement<br/>본 위치·크기"]
-        SO["SurfaceOffsetFitter<br/>CylinderTable · BodyCylinders<br/>FormCheck · StripChains"]
-        PF["PenetrationFixer<br/>ClothPierceResolver · PushField"]
-        RX["GarmentRelaxer<br/>GarmentDraper"]
-        HC["AppendageHoleCutter<br/>ContourHoleCutter · HoodHeadFitter · FurHider"]
-    end
-    SV["ResultPrefabSaver<br/>프리팹 저장"]
-    W --> L & T
-    W -- "입력 바뀔 때마다" --> FA
-    FA --> BM & RM & FD
-    W -- "맞추기 실행" --> OF
-    OF --> FP --> SO --> PF --> RX --> HC
-    W -- "저장" --> SV
+flowchart TD
+    W["OutfitGraderWindow<br/>창: 입력 · 진단 · 실행 · 저장"]
+    W --> L["OutfitInputList<br/>의상 목록"]
+    W --> T["MatchTableView<br/>본 연결 표"]
+    W -->|입력이 바뀔 때마다| FA["FitAnalysis<br/>분석"]
+    FA --> BM["BoneMatcher · BoneNameNormalizer<br/>본 매칭"]
+    FA --> RM["RegionMeasurer · BodySegmentMeasurer<br/>크기 측정"]
+    FA --> FD["FitDiagnostics<br/>진단 (FitFacts만 입력)"]
+    W -->|맞추기 실행| OF["OutfitFitter<br/>맞추기 순서 관리"]
+    OF -->|1| FP["FitPlacement<br/>본 위치 · 크기"]
+    OF -->|2| SO["SurfaceOffsetFitter · FormCheck<br/>표면 간격 보존 · 형태 검사"]
+    OF -->|3| PF["PenetrationFixer · AppendageHoleCutter · ClothPierceResolver<br/>관통 밀어내기 · 귀·꼬리 구멍 · 겹침 정리"]
+    OF -->|4| RX["GarmentRelaxer · GarmentDraper<br/>풀어 주기 · 늘어뜨리기"]
+    OF -->|5| HC["FurHider<br/>털 숨김"]
+    W -->|결과를 프리팹으로 저장| SV["ResultPrefabSaver<br/>프리팹 저장"]
 ```
 
 | 폴더 | 역할 | 주요 클래스 |
