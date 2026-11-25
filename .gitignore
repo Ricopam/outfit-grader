@@ -73,3 +73,10 @@ GEMINI.md
 /docs/plans/
 **/PRD.md
 /scripts/harness/
+
+# 포트폴리오 PPT·PDF는 저장소에 올리지 않음(로컬에서만 관리)
+*.pptx
+*.ppt
+*.potx
+*.key
+*.pdf
